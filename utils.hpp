@@ -28,8 +28,9 @@ void print_stat()
     std::string str((std::istreambuf_iterator<char>(s)),
                     std::istreambuf_iterator<char>());
 
-    using namespace std::chrono_literals;
-    std::this_thread::sleep_for(20000s);
+    std::cout << str << std::endl;
+    //using namespace std::chrono_literals;
+    //std::this_thread::sleep_for(20000s);
 }
 
 } // ns utils
