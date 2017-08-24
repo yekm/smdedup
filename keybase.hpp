@@ -15,7 +15,7 @@ public:
     typedef T key_type;
     typedef utils::SeqReader<> reader_type;
     KeyBase() {}
-    key_type compute(std::string filename)
+    const key_type & compute(std::string filename)
     {
         m_key = key_type{};
         m_reader.reset(filename);
@@ -25,15 +25,21 @@ public:
                 break;
             process_chunk(chunk, len);
         } while(true);
+        final();
         return m_key;
     }
 
 protected:
-    key_type m_key; // protected.. uh..
+    key_type & get_key()
+    {
+        return m_key;
+    }
 
 private:
     virtual key_type process_chunk(reader_type::buffer_type & chunk, ssize_t len) = 0;
+    virtual void final() {}
     reader_type m_reader;
+    key_type m_key;
 };
 
 } // ns keys

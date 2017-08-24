@@ -14,7 +14,7 @@ template <int N = 4096*32>
 class SeqReader
 {
 public:
-    typedef std::array<char, N> buffer_type;
+    typedef std::array<unsigned char, N> buffer_type;
     SeqReader()
     {
     }

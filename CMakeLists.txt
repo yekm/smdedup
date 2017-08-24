@@ -13,6 +13,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories("htrie/src")
 
+#uh oh
+#find_package(CryptoPP REQUIRED)
+
 set(SOURCE_FILES main.cpp
     crc32.c
     keycrc.cpp)
@@ -20,4 +23,4 @@ set(SOURCE_FILES main.cpp
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 #target_compile_options(${PROJECT_NAME} PRIVATE -O0 -ggdb3 -march=native)
 target_compile_options(${PROJECT_NAME} PRIVATE -Ofast -ggdb0 -march=native)
-target_link_libraries(${PROJECT_NAME} stdc++fs pthread)
+target_link_libraries(${PROJECT_NAME} stdc++fs pthread cryptopp)
