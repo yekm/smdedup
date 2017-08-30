@@ -3,6 +3,8 @@
 
 #include "keybase.hpp"
 
+#include "array_print.hpp"
+
 #include <cryptopp/sha3.h>
 
 namespace keys {
@@ -15,11 +17,11 @@ public:
 
     KeySHA3() {}
 
-    virtual typename base_type::key_type process_chunk(
-            typename base_type::reader_type::buffer_type &chunk,
+    virtual void process_chunk(
+            typename base_type::reader_type::buffer_type chunk,
             ssize_t len) override
     {
-        m_sha.Update(chunk.data(), len);
+        m_sha.Update(chunk, len);
     }
 
     virtual void final()

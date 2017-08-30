@@ -12,7 +12,7 @@ public:
     typedef KeyBase<uint32_t> base_type;
     KeyCRC();
 private:
-    virtual key_type process_chunk(reader_type::buffer_type & chunk, ssize_t len) override;
+    virtual void process_chunk(reader_type::buffer_type chunk, ssize_t len) override;
 };
 
 } // ns keys

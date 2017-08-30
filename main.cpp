@@ -8,7 +8,6 @@
 
 #include "keycrc.hpp"
 #include "keysha3.hpp"
-#include "utils.hpp"
 #include "triededuplicator.hpp"
 
 namespace fs = std::experimental::filesystem;
@@ -51,8 +50,8 @@ int main(int argc, char *argv[])
                                            [](unsigned sum, filelist_type & a){ return sum + a.size(); })
               << std::endl;
 
-    //typedef keys::KeyCRC key_computer;
-    typedef keys::KeySHA3<64> key_computer;
+    typedef keys::KeyCRC key_computer;
+    //typedef keys::KeySHA3<64> key_computer;
     TrieDeduplicator<key_computer, filelist_type> tdd(N, vec_fset); // TODO: add some slow hash
 
     tdd.calculate_keys();

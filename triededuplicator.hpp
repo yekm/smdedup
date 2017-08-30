@@ -58,7 +58,8 @@ public:
             }
             catch (std::runtime_error & e)
             {
-                std::cerr << "cant open file " << f_buffer << std::endl;
+                std::cerr << "cant open file " << f_buffer << ": "
+                          << e.what() << std::endl;
                 continue;
             }
 

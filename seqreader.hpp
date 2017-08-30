@@ -1,50 +1,65 @@
 #pragma once
 
-#include <string>
 #include <array>
-#include <tuple>
 #include <exception>
 #include <fcntl.h>
 #include <unistd.h>
+
+#include "filereader.hpp"
+#include "errno.hpp"
 
 namespace utils
 {
 
 template <int N = 4096*32>
-class SeqReader
+class SeqReader : public FileReader
 {
 public:
-    typedef std::array<unsigned char, N> buffer_type;
-    SeqReader()
-    {
-    }
+    SeqReader(const SeqReader &) = delete;
+    SeqReader & operator= (const SeqReader &) = delete;
+    SeqReader(SeqReader &&) = delete; // or *this = std::move(that)?
 
-    std::tuple<buffer_type &, ssize_t> read()
-    {
-        ssize_t bytes_read = ::read(m_fd, m_array.data(), N);
-        return {m_array, bytes_read};
-    }
+    SeqReader() = default;
 
-    void reset(const std::string & filename)
+    SeqReader(const std::string & filename)
     {
-        if (m_fd != 0)
-            ::close(m_fd);
-
         m_fd = ::open(filename.c_str(), O_RDONLY | O_NOFOLLOW);
         if (m_fd == -1)
-            throw std::runtime_error("open failed for " + filename); // TODO: meaningful exceptions
+            throw utils::Errno("open failed for", filename);
 
         posix_fadvise(m_fd, 0, 0, POSIX_FADV_SEQUENTIAL);
     }
 
+    SeqReader & operator = (SeqReader && other)
+    {
+        close();
+        m_fd = other.m_fd;
+        m_array = std::move(other.m_array);
+        other.m_fd = -1;
+        return *this;
+    }
+
+
+    virtual FileReader::read_buffer_type read() override
+    {
+        ssize_t bytes_read = ::read(m_fd, m_array.data(), N);
+        return {m_array.data(), bytes_read};
+    }
+
     ~SeqReader()
     {
-        ::close(m_fd);
+        close();
     }
 
 private:
-    int m_fd;
-    buffer_type m_array;
+    void close()
+    {
+        if (m_fd != -1)
+            ::close(m_fd);
+    }
+
+    int m_fd = -1;
+    std::array<FileReader::elenemt_type, N> m_array;
 };
 
 } // ns utils
