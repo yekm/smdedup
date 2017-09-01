@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     std::cout << "done calculating keys" << std::endl;
     tdd.merge();
     std::cout << "done merging" << std::endl;
-    tdd.print();
+    //tdd.print();
 
     return 0;
 }

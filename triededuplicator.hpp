@@ -4,6 +4,8 @@
 #include <map>
 #include <future>
 
+#include <atomic>
+
 template<typename Key, typename List>
 class TrieDeduplicator
 {
@@ -27,12 +29,18 @@ public:
     {
         for(unsigned i = 0; i<m_threads;++i)
             mmaps.at(i) = f_mmaps.at(i).get();
+        std::cout << "total MB processed: " << m_total_bytes_processed/1024/1024 << std::endl;
     }
 
     void merge()
     {
-        for(unsigned i = 0; i<m_threads;++i)
+        ssize_t m_duplicates = 0;
+        for(unsigned i = 0; i<m_threads; ++i)
+        {
             dedup_map.merge(mmaps.at(i));
+            m_duplicates += mmaps.at(i).size();
+        }
+        std::cout << "total duplicates: " << m_duplicates << std::endl;
     }
 
     void print()
@@ -65,6 +73,7 @@ public:
 
             d_map.insert({k, it});
         }
+        m_total_bytes_processed += key.get_total_bytes_processed();
         return std::move(d_map);
     }
 
@@ -73,6 +82,7 @@ private:
     std::vector<std::future<mmap_type>> f_mmaps;
     std::vector<mmap_type> mmaps;
     std::map<typename Key::key_type, typename List::const_iterator> dedup_map;
+    std::atomic<ssize_t> m_total_bytes_processed = 0;
 };
 
 #endif // TRIEDEDUPLICATOR_HPP

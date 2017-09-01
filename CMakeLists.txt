@@ -22,6 +22,6 @@ set(SOURCE_FILES main.cpp
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 #target_compile_options(${PROJECT_NAME} PRIVATE -O0 -ggdb3 -march=native)
-target_compile_options(${PROJECT_NAME} PRIVATE -Ofast -ggdb0 -march=native)
+target_compile_options(${PROJECT_NAME} PRIVATE -Ofast -g -march=native)
 #target_link_libraries(${PROJECT_NAME} -static-libasan asan stdc++fs pthread cryptopp)
 target_link_libraries(${PROJECT_NAME} stdc++fs pthread cryptopp)

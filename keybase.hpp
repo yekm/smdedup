@@ -25,10 +25,15 @@ public:
             auto && [chunk, len] = m_reader.read();
             if (len == 0)
                 break;
-            process_chunk(chunk, len);
+            base_process_chunk(chunk, len);
         } while(true);
         final();
         return m_key;
+    }
+
+    ssize_t get_total_bytes_processed()
+    {
+        return m_total_len;
     }
 
 protected:
@@ -38,11 +43,19 @@ protected:
     }
 
 private:
+    void base_process_chunk(reader_type::buffer_type chunk, /* read_buffer_type ? */
+                               ssize_t len)
+    {
+        m_total_len += len;
+        process_chunk(chunk, len);
+    }
+
     virtual void process_chunk(reader_type::buffer_type chunk, /* read_buffer_type ? */
-                                   ssize_t len) = 0;
+                               ssize_t len) = 0;
     virtual void final() {}
     reader_type m_reader;
     key_type m_key;
+    ssize_t m_total_len = 0;
 };
 
 } // ns keys
