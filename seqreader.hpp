@@ -32,10 +32,12 @@ public:
 
     SeqReader & operator = (SeqReader && other)
     {
-        close();
-        m_fd = other.m_fd;
-        m_array = std::move(other.m_array);
-        other.m_fd = -1;
+        if (this != &other)
+        {
+            close();
+            m_fd = std::exchange(other.m_fd, -1);
+            m_array = std::move(other.m_array);
+        }
         return *this;
     }
 

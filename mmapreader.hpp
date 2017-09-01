@@ -42,14 +42,14 @@ public:
 
     MmapReader & operator = (MmapReader && other)
     {
-        unmap();
-        m_file = std::move(other.m_file);
-        m_all_read = other.m_all_read;
-        m_len = other.m_len;
-        m_addr = other.m_addr;
-        other.m_addr = MAP_FAILED;
-        other.m_len = 0;
-        other.m_all_read = true;
+        if (this != &other)
+        {
+            unmap();
+            m_file = std::move(other.m_file);
+            m_all_read = std::exchange(other.m_all_read, true);
+            m_len = std::exchange(other.m_len, 0);
+            m_addr = std::exchange(other.m_addr, MAP_FAILED);
+        }
         return *this;
     }
 
