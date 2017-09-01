@@ -29,7 +29,10 @@ public:
     MmapReader(std::string filename)
     {
         m_file = utils::file_default(filename);
-        m_len = fs::file_size(filename);
+        //m_len = fs::file_size(filename);
+        struct stat s;
+        fstat(m_file.get(), &s);
+        m_len = s.st_size;
 
         if (m_len == 0)
             return;
